@@ -1,0 +1,446 @@
+---
+title: "Introduction to R"
+author: "Revendranath T"
+date: "2/25/2021"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Using R Console
+
+ 1+1
+- max(1,2,5)
+- q() #exit from R & RStudio
+- escape key to interrupt R
+- use help() or ? to get help from R
+- example help(mean or ?mean)
+
+## Slide with R Output
+
+```{r basics, echo = TRUE}
+pi
+sqrt(2)
+5^2
+```
+
+## Use print
+- To format any R value for printing, including structured values such as matrices and lists
+```{r print, echo=false}
+#print matrix
+print(matrix(c(1, 2, 3, 4), 2, 2))
+
+#print list
+print(list("a", "b", "c"))
+
+```
+
+
+## Working with variables
+- No need to declare variables first = or <-
+- Global variables: <<-
+- List variables: ls() or ls.str()
+- Delete variables: rm()
+
+```{r variables, echo=TRUE}
+# = or <- are used for assignment
+x = 3
+y <- 4
+
+
+x = c("fee", "fie", "foe", "fum") # x is a vector
+print(x)
+
+#global variable assignment <<-
+#That forces the assignment to a global variable rather than a local variable
+x <<- 3
+
+#listing variables
+ls()
+ls.str()
+
+# delete a variable
+rm(x)
+
+# delete multiple variables
+rm(x,y)
+```
+
+### Create vectors
+- Use the c(...) operator to construct a vector from given values
+- Use mode to know the type of vector: numeric, character, boolean
+
+```{r vectors, echo=TRUE}
+x1 = c(1, 1, 2, 3, 5, 8, 13, 21)
+mode(x1)
+
+f1 <- c(1 * pi, 2 * pi, 3 * pi, 4 * pi)
+mode(f1)
+s1 <- c("Welcome", "to", "BITS", "Pilani", "!")
+mode(s1)
+
+l1 <- c(TRUE, TRUE, FALSE, TRUE)
+mode(l1)
+
+```
+### Modes
+- What happens when you merge vectors of two different modes?
+```{r modes, echo=TRUE}
+
+v1 <- c(1, 2, 3)
+mode(v1)
+v3 <- c("A", "B", "C")
+mode(v3)
+v2 <- c(v1, v3)
+mode(v2)
+```
+
+## Basic Statistics with R
+- mean()
+- median()
+- var()
+- sd()
+- cor()
+- cov()
+
+```{r, echo=TRUE}
+#assign values to variable x
+x <- c(0, 1, 1, 2, 3, 5, 8, 13, 21, 34)
+
+#mean
+mean(x)
+
+#median
+median(x)
+
+#variance
+var(x)
+
+#standard deviation
+sd(x)
+
+#correlation & covariance. Need 2 variables. 
+
+# create a y variable
+y <- log(x + 1)
+
+#correlation
+cor(x, y)
+#covariance
+cov(x, y)
+
+```
+
+## Handling null values or NA
+- exclude null values using na.rm = TRUE
+- use imputation methods (discussed later)
+
+
+```{r, echo=TRUE}
+x <- c(0, 1, 1, 2, 3, NA)
+
+#without na.rm = TRUE => Excel would have required delete/handling missing value
+mean(x)
+sd(x)
+
+#with na.rm = TRUE
+mean(x,na.rm = TRUE) #ignoring null value
+sd(x,na.rm = TRUE)
+
+```
+
+## Basic statistics for multiple columns
+- use map_dbl() function from purrr package in tidyverse
+
+```{r, echo=TRUE}
+# use ?mtcars to verify the dataset
+library(tidyverse)
+data(mtcars)
+str(mtcars)
+head(mtcars)
+#mean
+map_dbl(mtcars, mean)
+
+#median
+map_dbl(mtcars, median)
+
+#sd
+map_dbl(mtcars, sd)
+
+#var
+map_dbl(mtcars, var)
+
+#all summary statistics
+summary(mtcars)
+
+#correlation
+cor(mtcars)
+
+#covariance
+cov(mtcars)
+```
+
+
+### Create sequences
+- create a sequence of numbers
+- Use an n:m expression to create the simple sequence n, n+1, n+2, …, m
+- Use the `seq` function for sequences with an increment other than 1
+- Use the rep function to create a series of repeated values
+
+```{r sequences, echo=TRUE}
+1:5
+
+seq(from = 1, to = 20, by = 2)
+
+rep(8, times = 5)
+```
+
+## Comparing vectors
+```{r, echo=TRUE}
+a <- 3
+a
+
+a == pi # Test for equality
+
+a != pi # Test for inequality
+
+a < pi
+
+a > pi
+
+a <= pi
+
+a >= pi
+
+```
+
+
+```{r, echo=TRUE}
+v <- c(3, pi, pi, 0)
+
+w <- c(pi, pi)
+
+v == w # Compare two vectors with different sizes
+
+v
+v < 3.14
+
+v != w
+
+v < w
+
+v <= w
+
+v > w
+
+v >= w
+
+```
+
+```{r, echo=TRUE}
+v <- c(3, pi, 4)
+v == pi # Compare a 3-element vector against one number
+
+v != pi
+
+```
+
+## Select elements in the vector
+```{r, echo=TRUE}
+fib <- c(0, 1, 1, 2, 3, 5, 8, 13, 21, 34)
+fib
+
+fib[1]
+
+fib[2]
+
+fib[3]
+
+fib[4]
+
+fib[5]
+
+```
+
+```{r, echo=TRUE}
+fib[1:3] # Select elements 1 through 3
+
+fib[4:9] # Select elements 4 through 9
+
+fib[c(1, 2, 4, 8)]
+
+fib[-1] # Ignore first element
+
+fib[1:3] # As before
+
+fib[-(1:3)] # Invert sign of index to exclude instead of select
+
+```
+
+
+```{r, echo=TRUE}
+fib < 10 # This vector is TRUE wherever fib is less than 10
+
+fib[fib < 10] # Use that vector to select elements less than 10
+
+fib %% 2 == 0 # This vector is TRUE wherever fib is even
+
+fib[fib %% 2 == 0] # Use that vector to select the even elements
+```
+
+
+## Combining vector comparisons, logical operators, and vector indexing
+
+```{r, echo=TRUE}
+v <- c(3, 6, 1, 9, 11, 16, 0, 3, 1, 45, 2, 8, 9, 6, -4)
+
+v[ v > median(v)]
+
+v[ (v < quantile(v, 0.05)) | (v > quantile(v, 0.95)) ]
+
+#Select all elements that exceed ±1 standard deviations from the mean:
+
+v[ abs(v - mean(v)) > sd(v)]
+
+#Select all elements that are neither NA nor NULL:
+
+v <- c(1, 2, 3, NA, 5)
+v[!is.na(v) & !is.null(v)]
+
+```
+
+## Vector Arithmetic
+```{r, echo=TRUE}
+v <- c(11, 12, 13, 14, 15)
+w <- c(1, 2, 3, 4, 5)
+v + w
+
+v - w
+
+v * w
+
+v / w
+
+w^v
+
+```
+
+
+## vector-scalar operations
+```{r, echo=TRUE}
+w
+
+w + 2
+
+w - 2
+
+w * 2
+
+w / 2
+
+2^w
+```
+
+```{r, echo=TRUE}
+w
+
+#sqrt
+sqrt(w)
+
+#log
+log(w)
+
+#sin
+sin(w)
+
+#mean
+mean(w)
+
+#distance from mean
+w - mean(w)
+
+#sd
+sd(w)
+
+#z-score
+(w - mean(w))/sd(w)
+
+
+```
+
+##  Choosing Between Two Alternatives: if-else
+
+```{r, echo=TRUE}
+#syntax 
+#if (condition) {
+  ##do this if condition is TRUE 
+#} 
+#else {
+  ## do this if condition is FALSE
+#}
+
+
+#Example
+
+if (x >= 0) {
+  print(sqrt(x))             # do this if x >= 0
+} else {
+  print("negative number")   # do this otherwise
+}
+
+x <- c(-2, -1, 0, 1, 2)
+
+if (all(x < 0)) {
+  print("all are negative")
+}
+
+if (any(x < 0)) {
+  print("some are negative")
+}
+```
+
+
+##  Iterating with a Loop
+```{r, echo=TRUE}
+#Syntax
+for (x in v) {
+  # do something with x
+}
+
+for (x in 1:5) {
+  #cat(x, x^2, "\n")
+  print(x) 
+  print( x^2)
+}
+
+
+v <- 1:5
+for (i in 1:5) {
+  v[[i]] <- v[[i]] ^ 2
+}
+print(v)
+
+```
+
+
+## functions
+```{r, echo=TRUE}
+#syntax
+name <- function(param1, ..., paramN) {
+          expr1
+          .
+          .
+          .
+          exprM
+}
+
+#function for coefficient of variation
+cv <- function(x) {
+  sd(x) / mean(x)
+}
+
+cv(1:10)     # Set x = 1:10 and evaluate sd(x)/mean(x)
+```
+
